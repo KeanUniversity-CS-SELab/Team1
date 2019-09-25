@@ -1,5 +1,5 @@
-# Team2
-Repository for Team2
+# Team1
+Repository for Team1
 echo "# Team1" >> README.md
 git init
 git add README.md
