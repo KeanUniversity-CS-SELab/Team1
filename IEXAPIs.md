@@ -1,11 +1,11 @@
-##IEX APIs that will be used in our project
+## IEX APIs that will be used in our project
 [IEX API Docs](https://iexcloud.io/docs/api/)
-Base API link
+###### Base API link
 `https://cloud.iexapis.com/`
-Sandbox testing link
-`https://sandbox.iexapis.com/
+###### Sandbox testing link
+`https://sandbox.iexapis.com/`
 
-Historical prices for a stock
+###### Historical prices for a stock
   `stock/{symbol}/chart/{range}/{date}`
     {range} formats
     `5y` 5 years with daily reports
