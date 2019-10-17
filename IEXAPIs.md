@@ -9,24 +9,19 @@
 *Do NOT use unadjusted data prefixed with u | Project #5*
 
  GET `stock/{symbol}/chart/{range}/{date}`
-  
-  - {range} formats:
-  
-    - `5y` 5 years with daily reports *Project #6*
-  
-    - `1m` 1 month with daily reports
-  
-    - `1mm` 1 month with reports for every 30 mins
-  
-    - `5d` 5 day with daily reports *Project #9
-  
-    - `5dm` 5 day with reports every 30 mins
-  
-    - `1d` 1 day with per minute reports
+   
+  |{range}|Description                           |Project Relevancy|
+  |-------|--------------------------------------|-----------------|
+  |`5y`   |5 years with daily reports            | #6|
+  |`1m`   |1 month with daily reports            |   |
+  |`1mm`  |1 month with reports for every 30 mins|   |
+  |`5d`   |5 day with daily reports              |#9 |
+  |`5dm`  |5 day with reports every 30 mins      |   |
+  |`1d`   |1 day with per minute reports         |   |
   
   GET `stock/{symbol}/chart/date/{date}`
   
-  - {date} being a specific date format being `YYYYMMDD`
+  - {date} format is `YYYYMMDD`
   - returns per minute reports
   - append with flag chartByDay=true for historical OHLCV data
   
