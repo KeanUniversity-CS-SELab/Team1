@@ -4,6 +4,7 @@ File>Open or open project
 github/StockAPI
 
 click OK
+maven dependencies will install
 
 to run this, go to src>main>java>com>StockAPI
 run StockApiApplication.java
