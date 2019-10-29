@@ -13,3 +13,31 @@ Connection to DB Via Command Line:
 4. use Software_Engineering;
 5. Run querys needed
 
+Database Create Functions
+
+1) Create Company table first
+
+DROP TABLE IF EXIST `Company`;
+CREATE TABLE `Company` (
+`id` int AUTO_INCREMENT NOT NULL,
+`stock_symbol` varchar(30),
+`company_name` varchar(30),
+`exchange` varchar(30),
+`industry` varchar(30),
+`website` varchar(30),
+PRIMARY KEY (`id`)
+)
+
+2) Create Stock table
+
+DROP TABLE IF EXIST Stock;
+CREATE TABLE Stock(
+id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+companyID int,
+date datetime,
+open DECIMAL(13,2),
+close DECIMAL(13,2),
+high DECIMAL(13,2),
+low DECIMAL(13,2),
+volume int,
+FOREIGN KEY (companyID) REFERENCES Company(id));
