@@ -1,0 +1,15 @@
+Schema: Software_Engineering
+User: se_user
+Password: https://trello.com/c/TnmdFPbT
+
+To View table design
+1. Go to draw.io
+2. File->Open from->device->Select File
+
+Connection to DB Via Command Line:
+1. Connect to Azure server
+2. mysql -u se_user -p
+3. Type Password
+4. use Software_Engineering;
+5. Run querys needed
+
