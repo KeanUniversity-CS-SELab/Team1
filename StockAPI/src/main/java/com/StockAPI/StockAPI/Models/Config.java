@@ -1,5 +1,7 @@
 package com.StockAPI.StockAPI.Models;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 public class Config {
@@ -7,10 +9,16 @@ public class Config {
     public Config(){
         configFile=new Properties();
         try {
-            configFile.load(this.getClass().getClassLoader().getResourceAsStream("C:\\Team1\\config.pswd"));
+            InputStream is=(this.getClass().getClassLoader().getResourceAsStream("application.properties"));
+            if(is!=null){
+                configFile.load(is);
+            }
+            else{
+                System.err.println("File Not Found");
+            }
         }
         catch(Exception e){
-            System.err.println(e);
+            System.err.println("config "+e);
         }
     }
     public String getProperty(String key){
