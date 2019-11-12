@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.undo.StateEdit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Locale;
 
 @RestController
 public class StocksController {
@@ -27,33 +29,53 @@ public class StocksController {
     }
 
     @RequestMapping("/daterange")
-    public String dateRange(@RequestParam(value="symbolid") int symbolID,@RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
+    public <startDate> String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
         //get data from db
         try{
-            Date start = new SimpleDateFormat("yyyy-mm-dd").parse(from);
-            Date end = new SimpleDateFormat("yyyy-mm-dd").parse(to);
-            MySQLConnector m=new MySQLConnector();
-            String where=" where id="+symbolID+" and date between str_to_date('"+start.toString()+"','yyyy-mm-dd') and str_to_date('"+end.toString()+"','yyyy-mm-dd')";
-            Statement stmt=m.conn.createStatement();
-            ResultSet r=stmt.executeQuery("select max(high),min(low),avg(close) from Stock"+where);
+            //Parse date received from API to a date then back to a string to avoid SQL injection
+            DateFormat df= new SimpleDateFormat("yyyy-MM-d",Locale.ENGLISH);
+            Date s= df.parse(from);
+            Date e=df.parse(to);
+            String start = df.format(s);
+            String end = df.format(e);
             DateRange result= new DateRange();
+            result.startDate=start;result.endDate=end;
+
+            MySQLConnector m=new MySQLConnector();
+            String where=" where companyID="+symbolID+" and date between str_to_date('"+start+"','%Y-%m-%e') and str_to_date('"+end+"','%Y-%m-%e')";
+            Statement stmt=m.conn.createStatement();
+
+            //get max price with date
+            String query="select high,date from Software_Engineering.Stock"+where+" order by high desc limit 1";
+            ResultSet r=stmt.executeQuery(query);
             if(r.next()) {
                 result.max = r.getBigDecimal(1);
-                result.min = r.getBigDecimal(2);
-                result.avg = r.getBigDecimal(3);
+                result.maxDate=r.getDate(2).toString();
             }
-            r.close();
-            stmt.close();
-            Statement stmt2 =m.conn.createStatement();
-            stmt2.executeQuery("select @rowindex=-1");
-            stmt2.close();
-            Statement stmt3 =m.conn.createStatement();
-            r=stmt3.executeQuery("select avg(s.close) from (select @rowindex:=@rowindex+1 as rowindex,close from Stock order by close) as s where s.rowindex in (floor(@rowindex/2),ceil(@rowindex/2))");
+            //get min price with date
+            query="select low,date from Software_Engineering.Stock"+where+" order by low asc limit 1";
+            r=stmt.executeQuery(query);
             if(r.next()) {
-                result.mean = r.getBigDecimal(1);
+                result.min = r.getBigDecimal(1);
+                result.minDate=r.getDate(2).toString();
             }
+            //get the avg price
+            query="select avg(close) from Software_Engineering.Stock"+where;
+            r=stmt.executeQuery(query);
+            if(r.next()) {
+                result.avg = r.getBigDecimal(1);
+            }
+            //get the median value
+            query="select close,date from Software_Engineering.Stock"+where+" order by close";
+            r=stmt.executeQuery(query);
+            if(r.next() && r.last()) {
+                int mead=r.getRow()/2;
+                r.absolute(mead);
+                result.mean = r.getBigDecimal(1);
+                result.meadDate=r.getDate(2).toString();
+            }
+            stmt.close();
             r.close();
-            stmt3.close();
             m.conn.close();
             System.out.println(new ObjectMapper().writeValueAsString(result));
             return new ObjectMapper().writeValueAsString(result);
