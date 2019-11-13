@@ -85,7 +85,7 @@ public class StocksController {
             return new String("error: 'SQL error'");
         }
         catch(ParseException e){
-            return new String("error: 'Incorrect date format, must be dd-MM-yyyy'");
+            return new String("error: 'Incorrect date format, must be yyyy-mm-dd'");
         }
     }
 }
