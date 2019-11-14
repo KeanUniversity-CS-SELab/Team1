@@ -1,15 +1,18 @@
 import requests, json, pymysql, datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-db = pymysql.connect(host="40.114.79.153",
-                     user="se_user",
-                     passwd="db_user_001",
-                     db="Software_Engineering",)
+
 
 stocklist = ["rfem","googl","unh"]
 sql = "INSERT INTO `Stock` (`companyID`,`date`, `open`, `close`, `high`, `low`,`volume`) VALUES (%s,%s, %s, %s, %s, %s,%s)"
 
 def scrape():
+
+    db = pymysql.connect(host="40.114.79.153",
+                     user="se_user",
+                     passwd="db_user_001",
+                     db="Software_Engineering",)
+
     date = datetime.date.today()
     d1 = date.strftime("%Y%m%d")
     print("Date Queried:" + d1)
@@ -29,7 +32,7 @@ def scrape():
         #checks if response is empty set, otherwise it will get the last element
         if response:
             length = len(response) - 1
-            arr = response[length]
+            arr = response[0]
             
             date = arr['date']
             open = arr['open']
@@ -57,10 +60,13 @@ def scrape():
         
 
         print('-----------------------------------------------------')
-
+    
+    db.close()
 
 #run scheduler to execute scraper code every day
+print("Scheduling to run every 24 hours")
 scheduler = BlockingScheduler()
-scheduler.add_job(scrape, 'interval', hours=25)
+scheduler.add_job(scrape, 'interval', hours=24)
 scheduler.start()
+
 
