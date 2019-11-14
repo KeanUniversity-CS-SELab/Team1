@@ -9,8 +9,8 @@ db = pymysql.connect(host="40.114.79.153",
 
 cursor = db.cursor()
 sql = "INSERT INTO `Stock` (`companyID`,`date`, `open`, `close`, `high`, `low`,`volume`) VALUES (%s,%s, %s, %s, %s, %s,%s)"
-companyID = 2
-rq = requests.get("https://cloud.iexapis.com/v1/stock/rfem/chart/5y/?token=pk_7c9f6a4fbd2b4cdb9354a31f921bffce")
+companyID = 3
+rq = requests.get("https://cloud.iexapis.com/v1/stock/unh/chart/5y/?token=pk_7c9f6a4fbd2b4cdb9354a31f921bffce")
 response = rq.json()
 
 for i in response:
@@ -25,6 +25,7 @@ for i in response:
         with db.cursor() as cursor:
             cursor.execute(sql, (companyID, date, open, close, high, low, volume))
             db.commit()
-    except Exception:
-        print("There was an error uploading to database")
+    except pymysql.InternalError as error:
+        code, message = error.args
+        print (">>>>>>>>>>>>>", code, message)
 
