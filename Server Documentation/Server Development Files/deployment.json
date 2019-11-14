@@ -1,0 +1,250 @@
+{
+  "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Resources/deployments/CreateVm-Canonical.UbuntuServer-18.04-LTS-20191013114723",
+  "name": "CreateVm-Canonical.UbuntuServer-18.04-LTS-20191013114723",
+  "type": "Microsoft.Resources/deployments",
+  "tags": {
+    "marketplaceItemId": "Microsoft.VirtualMachine",
+    "provisioningHash": "SolutionProvider",
+    "primaryResourceId": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourcegroups/Software_Engineering/providers/Microsoft.Compute/virtualMachines/Software-Engieering"
+  },
+  "properties": {
+    "templateHash": "9974785131685653225",
+    "parameters": {
+      "location": {
+        "type": "String",
+        "value": "eastus"
+      },
+      "networkInterfaceName": {
+        "type": "String",
+        "value": "software-engieering686"
+      },
+      "networkSecurityGroupName": {
+        "type": "String",
+        "value": "Software-Engieering-nsg"
+      },
+      "networkSecurityGroupRules": {
+        "type": "Array",
+        "value": [
+          {
+            "name": "SSH",
+            "properties": {
+              "priority": 300,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "22"
+            }
+          },
+          {
+            "name": "HTTP",
+            "properties": {
+              "priority": 320,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "80"
+            }
+          },
+          {
+            "name": "HTTPS",
+            "properties": {
+              "priority": 340,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "443"
+            }
+          }
+        ]
+      },
+      "subnetName": {
+        "type": "String",
+        "value": "default"
+      },
+      "virtualNetworkName": {
+        "type": "String",
+        "value": "Software_Engineering-vnet"
+      },
+      "addressPrefixes": {
+        "type": "Array",
+        "value": [
+          "10.0.0.0/24"
+        ]
+      },
+      "subnets": {
+        "type": "Array",
+        "value": [
+          {
+            "name": "default",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
+            }
+          }
+        ]
+      },
+      "publicIpAddressName": {
+        "type": "String",
+        "value": "Software-Engieering-ip"
+      },
+      "publicIpAddressType": {
+        "type": "String",
+        "value": "Dynamic"
+      },
+      "publicIpAddressSku": {
+        "type": "String",
+        "value": "Basic"
+      },
+      "virtualMachineName": {
+        "type": "String",
+        "value": "Software-Engieering"
+      },
+      "virtualMachineRG": {
+        "type": "String",
+        "value": "Software_Engineering"
+      },
+      "osDiskType": {
+        "type": "String",
+        "value": "Premium_LRS"
+      },
+      "virtualMachineSize": {
+        "type": "String",
+        "value": "Standard_B1s"
+      },
+      "adminUsername": {
+        "type": "String",
+        "value": "workflow"
+      },
+      "adminPassword": {
+        "type": "SecureString"
+      },
+      "diagnosticsStorageAccountName": {
+        "type": "String",
+        "value": "softwareengineeringdi881"
+      },
+      "diagnosticsStorageAccountId": {
+        "type": "String",
+        "value": "Microsoft.Storage/storageAccounts/softwareengineeringdi881"
+      },
+      "diagnosticsStorageAccountType": {
+        "type": "String",
+        "value": "Standard_LRS"
+      },
+      "diagnosticsStorageAccountKind": {
+        "type": "String",
+        "value": "Storage"
+      }
+    },
+    "mode": "Incremental",
+    "debugSetting": {
+      "detailLevel": "None"
+    },
+    "provisioningState": "Running",
+    "timestamp": "2019-10-13T15:53:22.5925248Z",
+    "duration": "PT0.6241506S",
+    "correlationId": "534b911d-54e5-4f71-9e51-4d4465938876",
+    "providers": [
+      {
+        "namespace": "Microsoft.Network",
+        "resourceTypes": [
+          {
+            "resourceType": "networkInterfaces",
+            "locations": [
+              "eastus"
+            ]
+          },
+          {
+            "resourceType": "networkSecurityGroups",
+            "locations": [
+              "eastus"
+            ]
+          },
+          {
+            "resourceType": "virtualNetworks",
+            "locations": [
+              "eastus"
+            ]
+          },
+          {
+            "resourceType": "publicIpAddresses",
+            "locations": [
+              "eastus"
+            ]
+          }
+        ]
+      },
+      {
+        "namespace": "Microsoft.Compute",
+        "resourceTypes": [
+          {
+            "resourceType": "virtualMachines",
+            "locations": [
+              "eastus"
+            ]
+          }
+        ]
+      },
+      {
+        "namespace": "Microsoft.Storage",
+        "resourceTypes": [
+          {
+            "resourceType": "storageAccounts",
+            "locations": [
+              "eastus"
+            ]
+          }
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Network/networkSecurityGroups/Software-Engieering-nsg",
+            "resourceType": "Microsoft.Network/networkSecurityGroups",
+            "resourceName": "Software-Engieering-nsg"
+          },
+          {
+            "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Network/virtualNetworks/Software_Engineering-vnet",
+            "resourceType": "Microsoft.Network/virtualNetworks",
+            "resourceName": "Software_Engineering-vnet"
+          },
+          {
+            "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Network/publicIpAddresses/Software-Engieering-ip",
+            "resourceType": "Microsoft.Network/publicIpAddresses",
+            "resourceName": "Software-Engieering-ip"
+          }
+        ],
+        "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Network/networkInterfaces/software-engieering686",
+        "resourceType": "Microsoft.Network/networkInterfaces",
+        "resourceName": "software-engieering686"
+      },
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Network/networkInterfaces/software-engieering686",
+            "resourceType": "Microsoft.Network/networkInterfaces",
+            "resourceName": "software-engieering686"
+          },
+          {
+            "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Storage/storageAccounts/softwareengineeringdi881",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "resourceName": "softwareengineeringdi881"
+          }
+        ],
+        "id": "/subscriptions/ec524cf9-993c-46a6-b39d-b0679914a802/resourceGroups/Software_Engineering/providers/Microsoft.Compute/virtualMachines/Software-Engieering",
+        "resourceType": "Microsoft.Compute/virtualMachines",
+        "resourceName": "Software-Engieering"
+      }
+    ],
+    "validationLevel": "Template"
+  }
+}
