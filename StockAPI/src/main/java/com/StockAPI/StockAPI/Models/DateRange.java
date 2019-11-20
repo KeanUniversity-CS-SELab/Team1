@@ -5,6 +5,6 @@ import java.util.Date;
 
 public class DateRange{
     public String startDate,endDate;
-    public BigDecimal max, min, avg, mean;
+    public BigDecimal max, min, avg, mead;
     public String maxDate,minDate,meadDate;
 }

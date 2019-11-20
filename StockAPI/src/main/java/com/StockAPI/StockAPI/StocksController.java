@@ -70,7 +70,7 @@ public class StocksController {
             if(r.next() && r.last()) {
                 int mead=r.getRow()/2;
                 r.absolute(mead);
-                result.mean = r.getBigDecimal(1);
+                result.mead = r.getBigDecimal(1);
                 result.meadDate=r.getDate(2).toString();
             }
             stmt.close();
