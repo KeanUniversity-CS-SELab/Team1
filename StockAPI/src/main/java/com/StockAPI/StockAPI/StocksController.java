@@ -29,7 +29,7 @@ public class StocksController {
     }
 
     @RequestMapping("/daterange")
-    public <startDate> String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
+    public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
         //get data from db
         try{
             //Parse date received from API to a date then back to a string to avoid SQL injection
