@@ -41,6 +41,9 @@ public class StocksController {
             result.startDate=start;result.endDate=end;
 
             MySQLConnector m=new MySQLConnector();
+            if(m.error!=null){
+                throw m.error;
+            }
             String where=" where companyID="+symbolID+" and date between str_to_date('"+start+"','%Y-%m-%e') and str_to_date('"+end+"','%Y-%m-%e')";
             Statement stmt=m.conn.createStatement();
 
@@ -81,10 +84,14 @@ public class StocksController {
         }
         catch(SQLException e){
             System.err.println(e);
-            return new String("error: 'SQL error'");
+            return new String("{\"error\":\"SQL error\"}");
         }
         catch(ParseException e){
-            return new String("error: 'Incorrect date format, must be yyyy-mm-dd'");
+            return new String("{\"error\":\"Incorrect date format, must be yyyy-mm-dd\"}");
+        }
+        catch(Exception e){
+            System.err.println(e);
+            return new String("{\"error\":\"An unknown error occurred\"}");
         }
     }
 }
