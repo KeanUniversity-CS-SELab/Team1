@@ -6,11 +6,22 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import com.StockAPI.StockAPI.Models.DateRange;
+import com.StockAPI.StockAPI.Models.MySQLConnector;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -66,5 +77,73 @@ public class StocksController {
         }
 
         return arrayNode;
+    }
+
+    @RequestMapping("/daterange")
+    public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
+        //get data from db
+        try{
+            //Parse date received from API to a date then back to a string to avoid SQL injection
+            DateFormat df= new SimpleDateFormat("yyyy-MM-d",Locale.ENGLISH);
+            Date s= df.parse(from);
+            Date e=df.parse(to);
+            String start = df.format(s);
+            String end = df.format(e);
+            DateRange result= new DateRange();
+            result.startDate=start;result.endDate=end;
+
+            MySQLConnector m=new MySQLConnector();
+            if(m.error!=null){
+                throw m.error;
+            }
+            String where=" where companyID="+symbolID+" and date between str_to_date('"+start+"','%Y-%m-%e') and str_to_date('"+end+"','%Y-%m-%e')";
+            Statement stmt=m.conn.createStatement();
+
+            //get max price with date
+            String query="select high,date from Software_Engineering.Stock"+where+" order by high desc limit 1";
+            ResultSet r=stmt.executeQuery(query);
+            if(r.next()) {
+                result.max = r.getBigDecimal(1);
+                result.maxDate=r.getDate(2).toString();
+            }
+            //get min price with date
+            query="select low,date from Software_Engineering.Stock"+where+" order by low asc limit 1";
+            r=stmt.executeQuery(query);
+            if(r.next()) {
+                result.min = r.getBigDecimal(1);
+                result.minDate=r.getDate(2).toString();
+            }
+            //get the avg price
+            query="select avg(close) from Software_Engineering.Stock"+where;
+            r=stmt.executeQuery(query);
+            if(r.next()) {
+                result.avg = r.getBigDecimal(1);
+            }
+            //get the median value
+            query="select close,date from Software_Engineering.Stock"+where+" order by close";
+            r=stmt.executeQuery(query);
+            if(r.next() && r.last()) {
+                int mead=r.getRow()/2;
+                r.absolute(mead);
+                result.mead = r.getBigDecimal(1);
+                result.meadDate=r.getDate(2).toString();
+            }
+            stmt.close();
+            r.close();
+            m.conn.close();
+            System.out.println(new ObjectMapper().writeValueAsString(result));
+            return new ObjectMapper().writeValueAsString(result);
+        }
+        catch(SQLException e){
+            System.err.println(e);
+            return new String("{\"error\":\"SQL error\"}");
+        }
+        catch(ParseException e){
+            return new String("{\"error\":\"Incorrect date format, must be yyyy-mm-dd\"}");
+        }
+        catch(Exception e){
+            System.err.println(e);
+            return new String("{\"error\":\"An unknown error occurred\"}");
+        }
     }
 }
