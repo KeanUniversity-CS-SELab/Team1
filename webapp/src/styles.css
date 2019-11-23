@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+.header{
+  background-color: cadetblue;
+}
+.title{
+  text-align: left;
+  font-size: 75px;
+  padding-left: 10px;
+  padding-right: 50px;
+}
+table{
+  width: 100%;
+}
+tr{
+  font-size: 25px;
+  border-bottom-style: solid;
+  border-bottom-color: white;
+}
+tr:last-child{
+  border-bottom-style: none;
+}
+td{
+  padding-right: 20px;
+  padding-left: 20px;
+}
