@@ -1,32 +1,28 @@
 package com.StockAPI.StockAPI;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+
 import com.StockAPI.StockAPI.Models.DateRange;
 import com.StockAPI.StockAPI.Models.MySQLConnector;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+
+import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Locale;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import java.sql.*;
-import java.util.HashMap;
 
 @RestController
 public class StocksController {
@@ -80,7 +76,7 @@ public class StocksController {
     }
 
     @RequestMapping("/daterange")
-    public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to) throws JsonProcessingException{
+    public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to){
         //get data from db
         try{
             //Parse date received from API to a date then back to a string to avoid SQL injection
