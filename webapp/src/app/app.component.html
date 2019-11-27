@@ -3,15 +3,19 @@
   <h1>IEX Stocks</h1>
   <p>Team 1's IEX Stock project</p>
 </div>
-<table>
-  <td *ngIf="companyFD">
-    test
-  </td>
+<dl class="row">
+  <dt class="col-md-8" *ngIf="data30">30 day</dt>
+  <dt class="col-md-6" *ngIf="dataInfo">Company Info</dt>
+  <dt class="col-md-6 " *ngIf="dataFD">
+    <h4>Company</h4>
+    Range: {{dataFD.startDate | date}} to {{dataFD.endDate | date}}
+    <br>Avg Price: {{dataFD.avg | currency}}
+    <br>Max Price of {{dataFD.max | currency}} reached on {{dataFD.maxDate | date}}
+    <br>Min Price of {{dataFD.min | currency}} reached on {{dataFD.minDate | date}}
+    <br>Median Price of {{dataFD.mead | currency}} reached on {{dataFD.meadDate | date}}
+  </dt>
+</dl>
 
-  <td *ngIf="companyInfo">
-    test
-  </td>
-</table>
 
 <div class="header">
   <table align="center">
@@ -23,9 +27,23 @@
         </button>
       </td>
       <td>
-        <button (click)="getDateFilter(2)">
-          DateFilter
-        </button>
+        <table class="inner">
+          <tr>
+            <td colspan="2" align="center">
+              <button (click)="getDateFilter(2)">
+                DateRange
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              From: <input type="date" [(ngModel)]="fromdate">
+            </td>
+            <td>
+              To: <input type="date" [(ngModel)]="todate">
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
     <tr>
@@ -36,9 +54,23 @@
         </button>
       </td>
       <td>
-        <button (click)="getDateFilter(1)">
-          DateFilter
-        </button>
+        <table class="inner">
+          <tr>
+            <td colspan="2" align="center">
+              <button (click)="getDateFilter(1)">
+                DateRange
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              From: <input type="date" [(ngModel)]="fromdate">
+            </td>
+            <td>
+              To: <input type="date" [(ngModel)]="todate">
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
     <tr>
@@ -49,9 +81,23 @@
         </button>
       </td>
       <td>
-        <button (click)="getDateFilter(3)">
-          DateFilter
-        </button>
+        <table class="inner">
+          <tr>
+            <td colspan="2" align="center">
+              <button (click)="getDateFilter(3)">
+                DateRange
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              From: <input type="date" [(ngModel)]="fromdate">
+            </td>
+            <td>
+              To: <input type="date" [(ngModel)]="todate">
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
