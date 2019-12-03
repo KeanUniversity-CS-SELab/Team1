@@ -42,21 +42,25 @@ public class StocksController {
         // loop through dates and set up jdbc connection
 
         //nodes for returning JSON
-        ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
+
         ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
 
 
         try {
-            Connection con=DriverManager.getConnection(
-                    "jdbc:mysql://40.114.79.153:3306/Software_Engineering","se_user","db_user_001");
+            MySQLConnector conn=new MySQLConnector();
+            if(conn.error!=null){
+                throw conn.error;
+            }
 
             for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(1)){
-                Statement stmt=con.createStatement();
+                Statement stmt=conn.conn.createStatement();
                 ResultSet rs=stmt.executeQuery("select * from Stock where date LIKE '%"+startDate+"%'  ");
 
                 while(rs.next()){
                     System.out.println("Id: " + rs.getString("id") + "| Company ID: " + rs.getString("companyID") + " | Date: " + rs.getString("date") + " | Open: " + rs.getString("open") + " | Close: " + rs.getString("close") + " | High: " + rs.getString("high")+ " | Low: " + rs.getString("low")+ " | Volume: " + rs.getString("volume"));
                     System.out.println("-------------------------------------------------------------");
+
+                    ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
 
                     objectNode.put("id",rs.getString("id"));
                     objectNode.put("companyID",rs.getString("companyID"));
@@ -73,6 +77,8 @@ public class StocksController {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
