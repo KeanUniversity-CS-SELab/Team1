@@ -81,6 +81,47 @@ public class StocksController {
         return arrayNode;
     }
 
+
+    @RequestMapping(path = "/companyInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ArrayNode companyInfo(@RequestParam String company) {
+
+        //nodes for returning JSON
+
+        ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
+
+
+        try {
+            MySQLConnector conn = new MySQLConnector();
+            if (conn.error != null) {
+                throw conn.error;
+            }
+
+            Statement stmt=conn.conn.createStatement();
+            ResultSet rs=stmt.executeQuery("select * from Company where stock_symbol='"+company+"'  ");
+
+            while(rs.next()){
+
+                ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
+
+                objectNode.put("companyName",rs.getString("company_name"));
+                objectNode.put("website",rs.getString("website"));
+                objectNode.put("exchange",rs.getString("exchange"));
+                objectNode.put("industry",rs.getString("industry"));
+                objectNode.put("website",rs.getString("website"));
+
+                arrayNode.add(objectNode);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        return arrayNode;
+    }
+
     @RequestMapping("/daterange")
     public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to){
         //get data from db
