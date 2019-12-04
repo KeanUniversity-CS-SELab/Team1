@@ -1,6 +1,6 @@
 import {Component, NgModule} from '@angular/core';
 import {HttpParams, HttpClient, HttpResponse} from '@angular/common/http';
-import {DateRangeData, DayData} from '../assets/Models';
+import {DateRangeData, DayData, CompanyInfoData} from '../assets/Models';
 
 @Component({
   selector: 'app-root',
@@ -11,22 +11,26 @@ import {DateRangeData, DayData} from '../assets/Models';
 export class AppComponent {
 
   title = 'Team 1 IEF Stocks';
-  dataFD: DateRangeData; fromdate = null; todate = null;
-  dataInfo = null;
+  fdID = null; infoID = null;
+  dataFD = [null, null, null]; fromdate = '2018-10-01'; todate = '2019-10-01';
+  dataInfo = [null, null, null];
   data30: DayData[]; date30 = null;
+  symbols = [{id: 1, name: 'RFEM'}, {id: 2, name: 'GOOGL'}, {id: 3, name: 'UNH'}];
+
   constructor(private http: HttpClient) {}
 
   getCompanyInfo(company): void{
+    this.infoID = company;
     const p = new HttpParams()
-      .set('symbolid', company)
-    this.http.get('http://localhost:8080/tbd')
-      .subscribe((data: any[]) => {
-        console.log(data);
-        this.dataInfo = data;
+      .set('company', company);
+    const options ={params: p}
+    this.http.get('http://localhost:8080/companyInfo',options)
+      .subscribe((data: CompanyInfoData) => {
+        this.dataInfo[company]=data;
       });
   }
   getDateFilter(company): void{
-    console.log(this.fromdate, this.todate);
+    this.fdID = company;
     const p = new HttpParams()
       .set('symbolid', company)
       .set('from', this.fromdate)
@@ -34,8 +38,7 @@ export class AppComponent {
     const options = {params: p};
     this.http.get('http://localhost:8080/daterange', options)
       .subscribe((data: DateRangeData) => {
-        this.dataFD = data;
-        console.log(data);
+        this.dataFD[company] = data;
       });
   }
   getThirtyDay(): void{

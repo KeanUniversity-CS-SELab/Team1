@@ -9,7 +9,7 @@ export interface DateRangeData{
   minDate: string;
   meadDate: string;
 }
-export  interface DayData {
+export interface DayData{
   id: string;
   companyID: string;
   date: string;
@@ -18,4 +18,11 @@ export  interface DayData {
   high: string;
   low: string;
   volume: string;
+}
+export interface CompanyInfoData{
+  companyName: string;
+  website: string;
+  exchange: string;
+  industry: string;
+  symbol: string;
 }

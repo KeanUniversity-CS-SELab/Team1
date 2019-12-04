@@ -4,101 +4,52 @@
   <p>Team 1's IEX Stock project</p>
 </div>
 <dl class="row">
-  <dt class="col-md-8" *ngIf="data30">30 day</dt>
-  <dt class="col-md-6" *ngIf="dataInfo">Company Info</dt>
-  <dt class="col-md-6 " *ngIf="dataFD">
-    <h4>Company</h4>
-    Range: {{dataFD.startDate | date}} to {{dataFD.endDate | date}}
-    <br>Avg Price: {{dataFD.avg | currency}}
-    <br>Max Price of {{dataFD.max | currency}} reached on {{dataFD.maxDate | date}}
-    <br>Min Price of {{dataFD.min | currency}} reached on {{dataFD.minDate | date}}
-    <br>Median Price of {{dataFD.mead | currency}} reached on {{dataFD.meadDate | date}}
-  </dt>
+  co
+</dl>
+<dl class="row">
+  <dt class="col-md-12" *ngIf="data30">30 day</dt>
 </dl>
 
 
-<div class="header">
-  <table align="center">
-    <tr>
-      <td class="title">Google</td>
-      <td>
-        <button (click)="getCompanyInfo(2)">
-          Company Info
-        </button>
-      </td>
-      <td>
-        <table class="inner">
-          <tr>
-            <td colspan="2" align="center">
-              <button (click)="getDateFilter(2)">
-                DateRange
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              From: <input type="date" [(ngModel)]="fromdate">
-            </td>
-            <td>
-              To: <input type="date" [(ngModel)]="todate">
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="title">RFEM</td>
-      <td>
-        <button (click)="getCompanyInfo(1)">
-          Company Info
-        </button>
-      </td>
-      <td>
-        <table class="inner">
-          <tr>
-            <td colspan="2" align="center">
-              <button (click)="getDateFilter(1)">
-                DateRange
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              From: <input type="date" [(ngModel)]="fromdate">
-            </td>
-            <td>
-              To: <input type="date" [(ngModel)]="todate">
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr>
-      <td class="title">UNH</td>
-      <td>
-        <button (click)="getCompanyInfo(3)">
-          Company Info
-        </button>
-      </td>
-      <td>
-        <table class="inner">
-          <tr>
-            <td colspan="2" align="center">
-              <button (click)="getDateFilter(3)">
-                DateRange
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              From: <input type="date" [(ngModel)]="fromdate">
-            </td>
-            <td>
-              To: <input type="date" [(ngModel)]="todate">
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<div class="header" *ngFor="let s of symbols">
+  <div class="row">
+    <div class="col-md-4 title">
+        {{s.name}}
+    </div>
+    <div class="col-md-4 button">
+      <button (click)="getCompanyInfo(s.id)">
+        Company Info
+      </button>
+    </div>
+    <div class="col-md-4">
+      <div class="row inner">
+        <div class="col-md-4 button">
+          <button (click)="getDateFilter(s.id)">
+            DateRange
+          </button>
+        </div>
+      </div>
+      <div class="row inner">
+        <div class="col-md-4">
+          From: <input type="date" [(ngModel)]="fromdate">
+        </div>
+        <div class="col-md-4">
+          To: <input type="date" [(ngModel)]="todate">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row data" *ngIf="dataInfo[s.id] || dataFD[s.id]">
+    <div class="col-md-6" *ngIf="dataInfo[s.id]">
+      company info
+    </div>
+    <div class="col-md-6 " *ngIf="dataFD[s.id]">
+      Range: {{dataFD.startDate | date}} to {{dataFD.endDate | date}}
+      <br>Avg Price: {{dataFD.avg | currency}}
+      <br>Max Price of {{dataFD.max | currency}} reached on {{dataFD.maxDate | date}}
+      <br>Min Price of {{dataFD.min | currency}} reached on {{dataFD.minDate | date}}
+      <br>Median Price of {{dataFD.mead | currency}} reached on {{dataFD.meadDate | date}}
+    </div>
+  </div>
+
 </div>
