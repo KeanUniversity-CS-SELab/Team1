@@ -9,10 +9,7 @@ import com.StockAPI.StockAPI.Models.MySQLConnector;
 
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,24 +27,20 @@ public class StocksController {
     @Autowired
     private ObjectMapper jacksonObjectMapper;
 
+    @CrossOrigin
     @RequestMapping(path = "/IEX30", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayNode greeting(@RequestParam String date) {
         //get current day and 30 days before this day to query
         LocalDate end = LocalDate.parse(date);
         LocalDate start = end.minusDays( 30 );
         // loop through dates and set up jdbc connection
-
         //nodes for returning JSON
-
         ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
-
-
         try {
             MySQLConnector conn=new MySQLConnector();
             if(conn.error!=null){
                 throw conn.error;
             }
-
             for(LocalDate startDate = start; startDate.isBefore(end); startDate = startDate.plusDays(1)){
                 Statement stmt=conn.conn.createStatement();
                 ResultSet rs=stmt.executeQuery("select * from Stock where date LIKE '%"+startDate+"%'  ");
@@ -68,61 +61,43 @@ public class StocksController {
                     objectNode.put("volume",rs.getString("volume"));
 
                     arrayNode.add(objectNode);
-
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return arrayNode;
     }
 
-
-    @RequestMapping(path = "/companyInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ArrayNode companyInfo(@RequestParam String company) {
-
-        //nodes for returning JSON
-
-        ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
-
-
+    @CrossOrigin
+    @RequestMapping(path = "/companyInfo", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ObjectNode companyInfo(@RequestParam String company) {
+        //node for returning JSON
+        ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
         try {
             MySQLConnector conn = new MySQLConnector();
             if (conn.error != null) {
                 throw conn.error;
             }
-
             Statement stmt=conn.conn.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from Company where stock_symbol='"+company+"'  ");
-
+            ResultSet rs=stmt.executeQuery("select * from Software_Engineering.Company where id='"+company+"'  ");
             while(rs.next()){
-
-                ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
-
                 objectNode.put("companyName",rs.getString("company_name"));
                 objectNode.put("website",rs.getString("website"));
                 objectNode.put("exchange",rs.getString("exchange"));
                 objectNode.put("industry",rs.getString("industry"));
-                objectNode.put("website",rs.getString("website"));
-
-                arrayNode.add(objectNode);
-
+                objectNode.put("symbol",rs.getString("stock_symbol"));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-        return arrayNode;
+        return objectNode;
     }
 
-    @RequestMapping("/daterange")
+    @CrossOrigin
+    @RequestMapping(path = "/daterange", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String dateRange(@RequestParam(value="symbolid") int symbolID, @RequestParam(value="from") String from, @RequestParam(value="to") String to){
         //get data from db
         try{
@@ -174,7 +149,6 @@ public class StocksController {
             stmt.close();
             r.close();
             m.conn.close();
-            System.out.println(new ObjectMapper().writeValueAsString(result));
             return new ObjectMapper().writeValueAsString(result);
         }
         catch(SQLException e){

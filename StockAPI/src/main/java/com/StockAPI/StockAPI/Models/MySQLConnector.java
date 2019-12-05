@@ -11,7 +11,7 @@ public class MySQLConnector {
     public MySQLConnector(){
         try {
             Config cfg=new Config();
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection("jdbc:mysql://"+cfg.getProperty("S_IP")+"/"+cfg.getProperty("DB_NAME"),cfg.getProperty("DB_ID"), cfg.getProperty("DB_PWD"));
         }
         catch(ClassNotFoundException | SQLException | IllegalAccessException | InstantiationException e){
