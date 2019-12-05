@@ -1,0 +1,62 @@
+
+<div class="jumbotron text-center">
+  <h1>IEX Stocks</h1>
+  <p>Team 1's IEX Stock project</p>
+</div>
+<div>
+  Generate 30 day report: <input type="date" [(ngModel)]="date30">
+  <button (click)="getThirtyDay()">Submit</button><br>
+  Display 30 day data here
+</div>
+
+
+<div class="header" *ngFor="let s of symbols">
+  <div class="row">
+    <div class="col-md-3 title">
+        {{s.name}}
+    </div>
+    <div class="col-md-4 button">
+      <button (click)="getCompanyInfo(s.id)">
+        Company Info
+      </button>
+    </div>
+    <div class="col-md-4">
+      <div class="row inner">
+        <div class="col-md-4 button">
+          <button (click)="getDateFilter(s.id)">
+            DateRange
+          </button>
+        </div>
+      </div>
+      <div class="row input">
+        <div class="col-md-4">
+          From: <input type="date" [(ngModel)]="fromdate">
+        </div>
+        <div class="col-md-4">
+          To: <input type="date" [(ngModel)]="todate">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row data" *ngIf="dataInfo[s.id] || dataFD[s.id]">
+    <div class="col-md-3"></div>
+    <div class="col-md-4">
+      <div *ngIf="dataInfo[s.id]">
+        <b>{{dataInfo[s.id].companyName}}</b> is traded in the <b>{{dataInfo[s.id].exchange}}</b> as <b>{{dataInfo[s.id].symbol}}</b>
+        <br><br>Industry: <b>{{dataInfo[s.id].industry}}</b>
+        <br>Website: <a href="{{dataInfo[s.id].website}}" target="_blank">{{dataInfo[s.id].website}}</a>
+      </div>
+    </div>
+    <div class="col-md-1 bar"></div>
+    <div class="col-md-4">
+      <div *ngIf="dataFD[s.id]">
+        Range: {{dataFD[s.id].startDate | date}} to {{dataFD[s.id].endDate | date}}
+        <br>Avg Price: {{dataFD[s.id].avg | currency}}
+        <br>Max Price of {{dataFD[s.id].max | currency}} reached on {{dataFD[s.id].maxDate | date}}
+        <br>Min Price of {{dataFD[s.id].min | currency}} reached on {{dataFD[s.id].minDate | date}}
+        <br>Median Price of {{dataFD[s.id].mead | currency}} reached on {{dataFD[s.id].meadDate | date}}
+      </div>
+    </div>
+  </div>
+  <div class="row break"></div>
+</div>
