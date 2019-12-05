@@ -1,25 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+.graph{
+  padding-left: 20px;
+}
 .header{
   background-color: cadetblue;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
-.header > table{
-  width: 100%;
+.break{
+  background-color: white;
+  padding: 5px;
 }
 .title{
   text-align: left;
   font-size: 75px;
-  padding-left: 10px;
-  padding-right: 25px;
-}
-.header > table > tr{
-  font-size: 25px;
-  border-bottom-style: solid;
-  border-bottom-color: white;
-}
-.header > table > tr:last-child{
-  border-bottom-style: none;
-}
-.header > table > tr > td{
-  padding-right: 20px;
   padding-left: 20px;
+}
+.button{
+  text-align: center;
+  font-size: 25px;
+}
+.input{
+  text-align: left;
+  font-size: 15px;
+  padding-bottom: 10px;
+}
+.data{
+  background-color: lightgray;
+  padding: 10px;
+}
+.bar{
+  background-color: gray;
+  height: 100px;
+  width: 5px;
+  padding: 0px;
 }

@@ -14,7 +14,7 @@ export class AppComponent {
   fdID = null; infoID = null;
   dataFD = [null, null, null]; fromdate = '2018-10-01'; todate = '2019-10-01';
   dataInfo = [null, null, null];
-  data30: DayData[]; date30 = null;
+  data30: DayData[]; date30 = '2019-11-30';
   symbols = [{id: 1, name: 'RFEM'}, {id: 2, name: 'GOOGL'}, {id: 3, name: 'UNH'}];
 
   constructor(private http: HttpClient) {}
@@ -45,10 +45,11 @@ export class AppComponent {
     const p = new HttpParams()
       .set('date', this.date30);
     const options = {params: p};
-    this.http.get('http://localhost:8080/IEX30', options)
+    console.log(options);
+    this.http.post('http://localhost:8080/IEX30', null, options)
       .subscribe((data: DayData[]) => {
         this.data30 = data;
-        console.log(data);
       });
+
   }
 }
