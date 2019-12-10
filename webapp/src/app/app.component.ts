@@ -2,7 +2,6 @@ import {Component, NgModule, enableProdMode} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {HttpParams, HttpClient, HttpResponse, HttpHeaders} from '@angular/common/http';
 import {DateRangeData, DayData, CompanyInfoData} from '../assets/Models';
-import {Search} from './search.pipe';
 import {GoogleChartsModule} from 'angular-google-charts';
 enableProdMode();
 
