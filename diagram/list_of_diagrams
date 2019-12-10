@@ -1,1 +1,7 @@
 List of diagrams...
+
+1- Diagram shows functionality of initilizing the data base with 5 years worth of stock data.
+
+2- Diagram shows daily scraper functionality.
+
+3- Diagram shows springboot functionality that sends data to UI.
