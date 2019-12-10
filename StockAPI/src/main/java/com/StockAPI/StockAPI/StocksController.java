@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -45,6 +46,10 @@ public class StocksController {
         ArrayList<Double> volgoogle = new ArrayList<>();
         ArrayList<Double> volrfem = new ArrayList<>();
         ArrayList<Double> volunh = new ArrayList<>();
+
+        ArrayList<Double>changegoogle = new ArrayList<>();
+        ArrayList<Double>changerfem = new ArrayList<>();
+        ArrayList<Double>changeunh = new ArrayList<>();
 
 
 
@@ -77,22 +82,42 @@ public class StocksController {
 
                     if(rs.getString("companyID").equals("1")) {
                         volrfem.add(Double.parseDouble(rs.getString("volume")));
-                        double[] array = calculateVolume(volrfem);
+                        changerfem.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volrfem);
+                        String[] array2 = calculateVolume(changerfem);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
                         objectNode.put("volumeChange",array[0]);
                         objectNode.put("volumeChangeOverTime",array[1]);
                         objectNode.put("volumeChangePercent",array[2]);
-                        System.out.println("Volume change: " + array[0] + " | Volume over time: " + array[1]);
                     }
                     else if(rs.getString("companyID").equals("2")){
                         volgoogle.add(Double.parseDouble(rs.getString("volume")));
-                        double[] array = calculateVolume(volgoogle);
+                        changegoogle.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volgoogle);
+                        String[] array2 = calculateVolume(changegoogle);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
                         objectNode.put("volumeChange",array[0]);
                         objectNode.put("volumeChangeOverTime",array[1]);
                         objectNode.put("volumeChangePercent",array[2]);
                     }
                     else if(rs.getString("companyID").equals("3")){
                         volunh.add(Double.parseDouble(rs.getString("volume")));
-                        double[] array = calculateVolume(volunh);
+                        changeunh.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volunh);
+                        String[] array2 = calculateVolume(changeunh);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
                         objectNode.put("volumeChange",array[0]);
                         objectNode.put("volumeChangeOverTime",array[1]);
                         objectNode.put("volumeChangePercent",array[2]);
@@ -220,24 +245,22 @@ public class StocksController {
     }
 
 
-    public double[] calculateVolume(ArrayList<Double> volume){
-        double[] array = new double[3];
+    public String[] calculateVolume(ArrayList<Double> volume){
+        String[] array = new String[3];
 
-        double volumeChange,volumeChangePercent,volumeChangeOverTime = volume.get(0);
+        String volumeChange,volumeChangePercent,volumeChangeOverTime;
+
+        DecimalFormat df = new DecimalFormat("###.##");
+
 
         if(volume.size()>1) {
-            volumeChange = volume.get(volume.size() - 1) - volume.get(volume.size() - 2);
-            volumeChangePercent = (volume.get(volume.size() - 1) - volume.get(volume.size() - 2)) / (volume.get(volume.size() - 1) + volume.get(volume.size() - 2));
-
-
-            for (int i = 1; i < volume.size(); i++) {
-                volumeChangeOverTime -= Math.abs(volumeChangeOverTime - volume.get(i));
-            }
-        }
-        else {
-            volumeChange = 0;
-            volumeChangePercent = 0;
-            volumeChangeOverTime = 0;
+            volumeChange = df.format(volume.get(volume.size() - 1) - volume.get(volume.size() - 2));
+            volumeChangePercent = df.format((volume.get(volume.size() - 1) - volume.get(volume.size() - 2)) / (volume.get(volume.size() - 1) + volume.get(volume.size() - 2)));
+            volumeChangeOverTime =  df.format(volume.get(0) - volume.get(volume.size()-1));
+        }else {
+            volumeChange = "0";
+            volumeChangePercent = "0";
+            volumeChangeOverTime = "0";
         }
 
         array[0] = volumeChange;
