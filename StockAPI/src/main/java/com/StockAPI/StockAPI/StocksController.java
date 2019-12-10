@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.time.LocalDate;
@@ -41,6 +42,11 @@ public class StocksController {
 
         ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
 
+        ArrayList<Double> volgoogle = new ArrayList<>();
+        ArrayList<Double> volrfem = new ArrayList<>();
+        ArrayList<Double> volunh = new ArrayList<>();
+
+
 
         try {
             MySQLConnector conn=new MySQLConnector();
@@ -54,7 +60,8 @@ public class StocksController {
 
                 while(rs.next()){
                     System.out.println("Id: " + rs.getString("id") + "| Company ID: " + rs.getString("companyID") + " | Date: " + rs.getString("date") + " | Open: " + rs.getString("open") + " | Close: " + rs.getString("close") + " | High: " + rs.getString("high")+ " | Low: " + rs.getString("low")+ " | Volume: " + rs.getString("volume"));
-                    System.out.println("-------------------------------------------------------------");
+                    System.out.println("-------------------------------------------------------------------------------------------------");
+
 
                     ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
 
@@ -67,14 +74,36 @@ public class StocksController {
                     objectNode.put("low",rs.getString("low"));
                     objectNode.put("volume",rs.getString("volume"));
 
+
+                    if(rs.getString("companyID").equals("1")) {
+                        volrfem.add(Double.parseDouble(rs.getString("volume")));
+                        double[] array = calculateVolume(volrfem);
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                        System.out.println("Volume change: " + array[0] + " | Volume over time: " + array[1]);
+                    }
+                    else if(rs.getString("companyID").equals("2")){
+                        volgoogle.add(Double.parseDouble(rs.getString("volume")));
+                        double[] array = calculateVolume(volgoogle);
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                    }
+                    else if(rs.getString("companyID").equals("3")){
+                        volunh.add(Double.parseDouble(rs.getString("volume")));
+                        double[] array = calculateVolume(volunh);
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                    }
+
                     arrayNode.add(objectNode);
 
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
+        }  catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -188,5 +217,34 @@ public class StocksController {
             System.err.println(e);
             return new String("{\"error\":\"An unknown error occurred\"}");
         }
+    }
+
+
+    public double[] calculateVolume(ArrayList<Double> volume){
+        double[] array = new double[3];
+
+        double volumeChange,volumeChangePercent,volumeChangeOverTime = volume.get(0);
+
+        if(volume.size()>1) {
+            volumeChange = volume.get(volume.size() - 1) - volume.get(volume.size() - 2);
+            volumeChangePercent = (volume.get(volume.size() - 1) - volume.get(volume.size() - 2)) / (volume.get(volume.size() - 1) + volume.get(volume.size() - 2));
+
+
+            for (int i = 1; i < volume.size(); i++) {
+                volumeChangeOverTime -= Math.abs(volumeChangeOverTime - volume.get(i));
+            }
+        }
+        else {
+            volumeChange = 0;
+            volumeChangePercent = 0;
+            volumeChangeOverTime = 0;
+        }
+
+        array[0] = volumeChange;
+        array[1] = volumeChangeOverTime;
+        array[2] = volumeChangePercent;
+
+
+        return array;
     }
 }
