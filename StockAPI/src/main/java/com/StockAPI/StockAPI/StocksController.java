@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.time.LocalDate;
@@ -36,6 +38,15 @@ public class StocksController {
         // loop through dates and set up jdbc connection
         //nodes for returning JSON
         ArrayNode arrayNode = jacksonObjectMapper.createArrayNode();
+
+        ArrayList<Double> volgoogle = new ArrayList<>();
+        ArrayList<Double> volrfem = new ArrayList<>();
+        ArrayList<Double> volunh = new ArrayList<>();
+
+        ArrayList<Double>changegoogle = new ArrayList<>();
+        ArrayList<Double>changerfem = new ArrayList<>();
+        ArrayList<Double>changeunh = new ArrayList<>();
+
         try {
             MySQLConnector conn=new MySQLConnector();
             if(conn.error!=null){
@@ -47,8 +58,8 @@ public class StocksController {
 
                 while(rs.next()){
                     System.out.println("Id: " + rs.getString("id") + "| Company ID: " + rs.getString("companyID") + " | Date: " + rs.getString("date") + " | Open: " + rs.getString("open") + " | Close: " + rs.getString("close") + " | High: " + rs.getString("high")+ " | Low: " + rs.getString("low")+ " | Volume: " + rs.getString("volume"));
-                    System.out.println("-------------------------------------------------------------");
-
+                    System.out.println("-------------------------------------------------------------------------------------------------");
+                    
                     ObjectNode objectNode = jacksonObjectMapper.createObjectNode();
 
                     objectNode.put("id",rs.getString("id"));
@@ -60,12 +71,56 @@ public class StocksController {
                     objectNode.put("low",rs.getString("low"));
                     objectNode.put("volume",rs.getString("volume"));
 
+
+                    if(rs.getString("companyID").equals("1")) {
+                        volrfem.add(Double.parseDouble(rs.getString("volume")));
+                        changerfem.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volrfem);
+                        String[] array2 = calculateVolume(changerfem);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                    }
+                    else if(rs.getString("companyID").equals("2")){
+                        volgoogle.add(Double.parseDouble(rs.getString("volume")));
+                        changegoogle.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volgoogle);
+                        String[] array2 = calculateVolume(changegoogle);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                    }
+                    else if(rs.getString("companyID").equals("3")){
+                        volunh.add(Double.parseDouble(rs.getString("volume")));
+                        changeunh.add(Double.parseDouble(rs.getString("close")));
+                        String[] array = calculateVolume(volunh);
+                        String[] array2 = calculateVolume(changeunh);
+
+                        objectNode.put("change",array2[0]);
+                        objectNode.put("changeOverTime",array2[1]);
+                        objectNode.put("changePercent",array2[2]);
+
+                        objectNode.put("volumeChange",array[0]);
+                        objectNode.put("volumeChangeOverTime",array[1]);
+                        objectNode.put("volumeChangePercent",array[2]);
+                    }
+
                     arrayNode.add(objectNode);
                 }
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return arrayNode;
@@ -162,5 +217,32 @@ public class StocksController {
             System.err.println(e);
             return new String("{\"error\":\"An unknown error occurred\"}");
         }
+    }
+
+
+    public String[] calculateVolume(ArrayList<Double> volume){
+        String[] array = new String[3];
+
+        String volumeChange,volumeChangePercent,volumeChangeOverTime;
+
+        DecimalFormat df = new DecimalFormat("###.##");
+
+
+        if(volume.size()>1) {
+            volumeChange = df.format(volume.get(volume.size() - 1) - volume.get(volume.size() - 2));
+            volumeChangePercent = df.format((volume.get(volume.size() - 1) - volume.get(volume.size() - 2)) / (volume.get(volume.size() - 1) + volume.get(volume.size() - 2)));
+            volumeChangeOverTime =  df.format(volume.get(0) - volume.get(volume.size()-1));
+        }else {
+            volumeChange = "0";
+            volumeChangePercent = "0";
+            volumeChangeOverTime = "0";
+        }
+
+        array[0] = volumeChange;
+        array[1] = volumeChangeOverTime;
+        array[2] = volumeChangePercent;
+
+
+        return array;
     }
 }
