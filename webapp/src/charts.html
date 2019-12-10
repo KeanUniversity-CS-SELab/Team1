@@ -13,10 +13,10 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
-
+  Date: <textarea id="date" ng-model="date" maxlength="10" style="width: fit-content;" class="md-textarea form-control" ></textarea>
 <button ng-click="scrape30()">Click me to make table and chart</button>
 
-<label>Search: <input ng-model="search.companyID"></label>
+<label>Company ID Search: <input ng-model="search.companyID"></label> 
 
 <table class="table table-striped">
         <thead>
@@ -52,32 +52,27 @@
 </body>
 
 <script>
+
+    var data = {
+      date : '2019-11-12'
+    }
     var app = angular.module("myApp", []);
     app.controller("myCtrl", function($scope,$http) {
-        $scope.stockRows = [
-            "Rows will be output Here"
-          ]
-
+// request data from IEX30
         $scope.scrape30 = () =>{
-            $(document).ready(function(){
-                $("button").click(function(){
-                    $.post("http://localhost:8080/IEX30",
-                    {
-                    'date': '2019-11-12',
-                    },
-                    function(data,status){
-                    $scope.stockRows = data;
-                    makeGraph(data)
-                    });
-                });
+            $http.post('http://40.114.79.153:8080/IEX30?date='+$scope.date).then(successCallback = (data) => {
+                $scope.stockRows = data.data;
+                makeGraph(data.data);
+            }, errorCallback = (data) =>{
+                console.log("data");
             });
-
-
+          console.log("scrape30");
         }
 
     });
 
     makeGraph = (stocks) =>{
+      //populate arrays by company
         var googl = [];
         var rfem = [];
         var unh = [];
@@ -98,6 +93,7 @@
         console.log(rfem);
         console.log(unh);
 
+        // create chart
       google.charts.load('current', {'packages':['line']});
       google.charts.setOnLoadCallback(drawChart);
 
@@ -125,10 +121,6 @@
 
       chart.draw(data, google.charts.Line.convertOptions(options));
     }
-
-
-
-
 
     }
 
